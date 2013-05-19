@@ -97,7 +97,7 @@ function drawTimeline(){
       cy: margin.top,
       r: 7,
       stroke: "black",
-      fill: "#46594B",
+      fill: "#57AFC0",
       id: function(d){return "pt" + (d.key).replace('/', '');}
     })
     .on("click", function(d) { return displayInfo(d.key); })
@@ -107,15 +107,67 @@ function drawTimeline(){
     })
     .on("mouseout", function(d,i) {
       d3.select("#pt" + (d.key).replace('/', ''))
-        .attr("r","7");
+      .attr("r","7");
     });
 
     /*circles.append('title')
     .text(function(d, i){ return dataRaw[i].date + " - " + d.name;});*/
+
+    //displayInfo(mindate);
 }
 
 function displayInfo(date){
+  //if undo the click change to the last clicked circle
+  if (lastDate !== undefined){
+    d3.select("#pt" + (lastDate).replace('/', ''))
+      .attr("fill","#57AFC0");
+  }
+  //preform the click change to this circle
+  d3.select("#pt" + (date).replace('/', ''))
+      .attr("fill","#fff");
 
+  var dateDetails = d3.select("#dateDetails");
+
+  //if there is something displayed, clear it out
+  if (dateDetails[0][0].innerHTML !== ""){
+    dateDetails[0][0].innerHTML = "";
+    //if the click is not the second click of the same date, display the date (post removal)
+    if (date !== lastDate){
+      displayInfo(date);
+    }
+    else {
+      //if it's the second click to the circle, undo the click change to it
+      d3.select("#pt" + (date).replace('/', ''))
+      .attr("fill","#57AFC0");
+    }
+  }
+  else {
+    var dateData = data.filter(function(d){return d.key == date;})[0].values;
+/*
+<div>
+  <div class="floatLeft"><img src="./img/portfolioThumbs/area.png"></div>
+  <div class="clearfix"><p>sdfsfdsdfsfdsfdsfd<p></div>
+</div>
+*/
+    for (var i = 0; i < dateData.length; i++) {
+      var mainDiv = dateDetails.append("div");
+      var imgDiv = mainDiv.append("div").classed((i%2===0?"floatLeft":"floatRight"), true);
+      var contDiv = mainDiv.append("div").classed("clearfix", true);
+
+      var para = contDiv.append("p").classed((i%2===0?"textLeft":"textRight"),true);
+
+      para.text(dateData[i].description);
+
+      if (dateData[i].picture !== null){
+        imgDiv.append("img").attr({
+          "src" : "./img/portfolioThumbs/" + dateData[i].picture
+         })
+        .classed("entryImg", true);
+      } 
+    }
+
+    lastDate = date;
+  }
 }
 
 /*
