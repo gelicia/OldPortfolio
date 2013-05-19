@@ -51,20 +51,21 @@ width: 100px;
 background-color: #f9c;
 }
 
-.scaleStyle path,
-.scaleStyle line {
+.monthScale path,
+.monthScale line {
    fill: none;
 }
 
-.scaleStyle{
-font-size: 15px
+.monthScale{
+	font-size: 13px;
 }
 
-.yearStyle path,
-.yearStyle line {
+.yearScale path,
+.yearScale line {
    fill: none;
 }
 
-.yearStyle{
+.yearScale{
 	font-weight:bold;
+	font-size: 15px;
 }

@@ -1,6 +1,17 @@
 var data = [];
+var lastDate; //save the last clicked date so a double click closes the item
 
 function init(){
+  var loadPromise = dataLoad();
+  loadPromise.done(
+    function(){
+      drawTimeline();
+    }
+  );
+}
+
+function dataLoad(){
+  var def = $.Deferred();
   var dateParse = d3.time.format("%m/%Y").parse;
 
   var ds = new Miso.Dataset({
@@ -13,70 +24,69 @@ function init(){
   ds.fetch({ 
     success : function() {
       this.each(function(row){ data.push(row); });
-      //add a full data attribute
+      //add a full date attribute for logic but keep the other one for display
       data = data.map(function(d){d.fullDate = dateParse(d.date); return d;});
-      console.log(data);
+      def.resolve();
     },
     error : function() {
       console.log("Error loading the spreadsheet");
+      def.resolve();
     }
   });
 
+  return def.promise();
 }
 
-/*var dateParse = d3.time.format("%m/%Y").parse;
+function drawTimeline(){
+  var svg = d3.select('svg');
+  //this is the margin for the line of the bar chart. All labels need to fit above it
+  var margin = {top: 68, left: 20, right: 20};
+  var screenWidth = parseInt(svg.style("width"), 10);
 
-var dataRaw = [{name: "date1", date: "5/2012"},
-            {name: "date2", date: "08/2012"},
-            {name: "date3", date: "01/2013"},
-            {name: "date4", date: "02/2013"},
-            {name: "date5", date: "03/2013"},
-            {name: "date6", date: "04/2013"}];
+  //min and max dates for the timeline
+  var minDate = d3.min(data, function(d){return d.fullDate;});
+  //get today's date (max value) and reset it to being the first of the month
+  var maxDate = new Date();
+  maxDate.setDate(1);
+  maxDate.setHours(0,0,0,0);
 
-var data = dataRaw.map(function(d){return {name: d.name, date: dateParse(d.date)}})
+  var timeScale = d3.time.scale().domain([minDate, maxDate]).range([margin.left, screenWidth - (margin.left + margin.right)]);
 
-//style
-var sideMar = 47;
-var margin = {top: 68, left: sideMar, right: sideMar};
-var lastDate;
-var svg = d3.select('svg');
-var tributary= {sw: 1000};
-svg.append('line')
-.attr({
-  x1: margin.left,
-  y1: margin.top,
-  x2: tributary.sw - (margin.right+margin.left),
-  y2: margin.top,
-  "stroke": "black"
-});
+  var monthAxis = d3.svg.axis().scale(timeScale)
+    .tickFormat(d3.time.format("%b"))
+    .ticks(d3.time.months, 1);
 
-var minDate = d3.min(data, function(d){return d.date});
-var d = new Date();
+  var yearAxis = d3.svg.axis().scale(timeScale)
+    .tickFormat(d3.time.format("%Y"))
+    .ticks(d3.time.years, 1);
 
-var timeScale = d3.time.scale().domain([minDate, dateParse(d.getMonth()+1 +"/" + d.getFullYear())]).range([margin.left, tributary.sw - (margin.left + margin.right)]);
+  //draw the timeline line
+  svg.append('line')
+  .attr({
+    x1: margin.left,
+    y1: margin.top,
+    x2: screenWidth - (margin.right+margin.left),
+    y2: margin.top,
+    "stroke": "black"
+  });
 
-var monthAxis = d3.svg.axis().scale(timeScale)
-	.tickFormat(d3.time.format("%b"))
-	.ticks(d3.time.months, 1);
-
-var yearAxis = d3.svg.axis().scale(timeScale)
-	.tickFormat(d3.time.format("%Y"))
-	.ticks(d3.time.years, 1)
- 
-svg.append("g")
-	.attr({
+  //Draw month and year labels for the timeline
+  svg.append("g")
+  .attr({
       "transform": "translate(0," + (margin.top - 35) + ")",
-      "class": "scaleStyle"
+      "class": "monthScale"
     })
     .call(monthAxis); 
 
-svg.append("g")
-	.attr({
+  svg.append("g")
+  .attr({
       "transform": "translate(0," + (margin.top - 60) + ")",
-      "class": "yearStyle"
+      "class": "yearScale"
     })
     .call(yearAxis); 
+}
 
+/*
 var circles = svg.selectAll('circle')
 .data(data).
 enter()
