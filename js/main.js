@@ -141,23 +141,49 @@ function displayInfo(date){
       .attr("fill","#57AFC0");
     }
   }
+  //if there is nothing displayed, display it
   else {
     var dateData = data.filter(function(d){return d.key == date;})[0].values;
-/*
-<div>
-  <div class="floatLeft"><img src="./img/portfolioThumbs/area.png"></div>
-  <div class="clearfix"><p>sdfsfdsdfsfdsfdsfd<p></div>
-</div>
-*/
+
     for (var i = 0; i < dateData.length; i++) {
       var mainDiv = dateDetails.append("div");
       var imgDiv = mainDiv.append("div").classed((i%2===0?"floatLeft":"floatRight"), true);
       var contDiv = mainDiv.append("div").classed("clearfix", true);
+      var descDiv = contDiv.append("div").classed((i%2===0?"textLeft":"textRight"),true);
 
-      var para = contDiv.append("p").classed((i%2===0?"textLeft":"textRight"),true);
+      var descPara = descDiv.append("p");
+      descPara.text(dateData[i].description);
 
-      para.text(dateData[i].description);
+      var urlSect = descDiv.append("p");
 
+      if (dateData[i].sourceURL == dateData[i].url){
+        urlSect.append("a")
+          .attr("href", dateData[i].url)
+          .text("View Visualization with Source");
+      }
+      else {
+        if (dateData[i].url !== null){
+          var urlText;
+          if (dateData[i].category == "presentation"){
+            urlText = "View slides";
+          }
+          else {
+            urlText = "View Visualization";
+          }
+          urlSect.append("a")
+            .attr("href", dateData[i].url)
+            .text(urlText);
+        }
+
+        urlSect.append("br");
+
+        if (dateData[i].sourceURL !== null){
+          urlSect.append("a")
+            .attr("href", dateData[i].sourceURL)
+            .text("(Source)");
+        }
+      }
+      
       if (dateData[i].picture !== null){
         imgDiv.append("img").attr({
           "src" : "./img/portfolioThumbs/" + dateData[i].picture
