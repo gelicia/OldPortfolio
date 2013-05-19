@@ -1,0 +1,70 @@
+body {
+  background-color: #D9938A;
+  font-size: 13px;
+  font-family: Arial, SunSans-Regular, Sans-Serif;
+  color:#564b47;  
+  padding:0;
+  margin:0;
+}
+
+a { 
+color: #ff66cc;
+text-decoration: none; 
+}
+ 
+
+h1 {
+font-size: 20px;
+color: #00665A;
+padding:5px 15px;
+margin:0px
+}
+
+h2 {
+font-size:16px;
+padding-top:10px;
+color: #564b47;
+background-color: transparent;
+}
+
+p, h2, pre {
+margin: 0; 
+padding: 5px 20px; 
+}
+
+#left {
+position: absolute;
+left: 0;
+width: 100px;
+}
+
+#content {
+margin: 10px 100px;
+border: 2px solid #D9A86C;
+background-color: #F2D8A7;    
+}
+
+#right {
+position: absolute;
+right: 0;        
+width: 100px;
+background-color: #f9c;
+}
+
+.scaleStyle path,
+.scaleStyle line {
+   fill: none;
+}
+
+.scaleStyle{
+font-size: 15px
+}
+
+.yearStyle path,
+.yearStyle line {
+   fill: none;
+}
+
+.yearStyle{
+	font-weight:bold;
+}
