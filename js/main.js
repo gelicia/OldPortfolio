@@ -105,7 +105,8 @@ function drawTimeline(){
     y1: margin.top,
     x2: screenWidth - (margin.right+margin.left),
     y2: margin.top,
-    "stroke": "black"
+    "stroke": "black",
+    "stroke-width": "2px"
   });
 
   //Draw month and year labels for the timeline
