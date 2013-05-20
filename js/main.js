@@ -1,6 +1,30 @@
 var data = [];
 var lastDate; //save the last clicked date so a double click closes the item
 
+$(document).keydown(function(e){
+  if (e.keyCode == 37 || e.keyCode == 39){
+    var newIdx;
+    if (lastDate === undefined){
+      newIdx = e.keyCode == 37? data.length-1 : 0;
+    }
+    else {
+      newIdx = findIdx(lastDate); // find the index of the last pressed date
+
+      if (newIdx===0 && e.keyCode == 37){ //if it's at the beginning and you're going back, go to the end
+        newIdx = data.length-1;
+      }
+      else if (newIdx==data.length-1 && e.keyCode == 39){ //if it's at the end and you're going forward, go to the start
+        newIdx = 0;
+      }
+      else {
+        newIdx += (e.keyCode==37? -1 : 1); //otherwise, go the way that makes sense
+      }
+    }
+    displayInfo(data[newIdx].key);
+    return false;
+  }
+});
+
 function init(){
   var loadPromise = dataLoad();
   loadPromise.done(
@@ -31,6 +55,15 @@ function dataLoad(){
         .entries(data);
       //format the data date key to be a real date for the timescale
       data = data.map(function(d){d.fullDate = dateParse(d.key); return d;});
+      //make sure it's sorted (we're going to be going forward and backward via keystroke)
+      data = data.sort(function(a, b){
+        if (a.fullDate < b.fullDate){
+          return -1;
+        }
+        else {
+          return 1;
+        }
+      });
       def.resolve();
     },
     error : function() {
@@ -165,7 +198,7 @@ function displayInfo(date){
         if (dateData[i].url !== null){
           var urlText;
           if (dateData[i].category == "presentation"){
-            urlText = "View slides";
+            urlText = "View Slides";
           }
           else {
             urlText = "View Visualization";
@@ -180,7 +213,7 @@ function displayInfo(date){
         if (dateData[i].sourceURL !== null){
           urlSect.append("a")
             .attr("href", dateData[i].sourceURL)
-            .text("(Source)");
+            .text("Source Repo");
         }
       }
       
@@ -196,54 +229,12 @@ function displayInfo(date){
   }
 }
 
-/*
-
-
-  var infoGroup = svg.select("g#infoGroup");
-  var rect;
-  
-  //If it is the second click (the info exists), 
-  //transition to remove it and rerun the function to redraw
-  if (infoGroup[0][0] !== null){
-    rect = d3.select("g#infoGroup > rect");
-    
-    rect.transition()
-    .duration(250)
-    .ease("linear")
-    .attr({
-      height: 0
-    })
-    .each("end", function(){
-      infoGroup.remove(); 
-      if (date !== lastDate){
-        displayInfo(date);
-      }
-    });
-    
+function findIdx(key){
+  for (var i = 0; i < data.length; i++) {
+    if (data[i].key == key){
+      return i;
+    }
   }
-  else {
-    infoGroup = svg.append("g")
-    .attr({"transform" : "translate(" + margin.left + "," + (margin.top + 30) + ")",
-           "id":"infoGroup"
-          });
-    
-    rect = infoGroup.append('rect')
-    .attr({
-      x: 0,
-      y: 0,
-          width : tributary.sw - (margin.left*2) - margin.right,
-      height: 0,
-      rx: 10,
-      fill: 'white',
-      "stroke-width": 4,
-      "stroke":"steelblue"
-    })
-    .transition()
-    .duration(250)
-    .ease("linear")
-    .attr({
-      height: 300
-    });
-    
-    lastDate = date;
-  }*/
+
+  return -1;
+}
