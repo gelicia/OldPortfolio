@@ -182,7 +182,7 @@ function displayInfo(date){
     var dateData = data.filter(function(d){return d.key == date;})[0].values;
 
     for (var i = 0; i < dateData.length; i++) {
-      var mainDiv = dateDetails.append("div");
+      var mainDiv = dateDetails.append("div").classed("portEntry", true);
       var imgDiv = mainDiv.append("div").classed((i%2===0?"floatLeft":"floatRight"), true);
       var contDiv = mainDiv.append("div").classed("clearfix", true);
       var descDiv = contDiv.append("div").classed((i%2===0?"textLeft":"textRight"),true);
