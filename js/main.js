@@ -78,7 +78,8 @@ function drawTimeline(){
   var svg = d3.select('svg');
   //this is the margin for the line of the bar chart. All labels need to fit above it
   var margin = {top: 50, left: 20, right: 20};
-  var screenWidth = parseInt(svg.style("width"), 10);
+  var screenWidth = $("#content").width();//done this way because firefox doesn't like svg.width = 100%
+  svg.attr("width", screenWidth + "px");
 
   //min and max dates for the timeline
   var minDate = d3.min(data, function(d){return d.fullDate;});
