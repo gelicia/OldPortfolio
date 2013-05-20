@@ -51,6 +51,12 @@ width: 100px;
 background-color: #f9c;
 }
 
+#footer p{
+	color: #fff;
+	font-size: 10px;
+	text-align: center;
+}
+
 svg#display{
 	width: 100%;
 	height: 80px;
