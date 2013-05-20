@@ -98,6 +98,10 @@ svg#display{
 	border: 1px #000 solid;
 }
 
+a.descLink{
+	display:block;
+}
+
 .clearfix:after { 
    content: "."; 
    visibility: hidden; 

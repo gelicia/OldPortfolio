@@ -172,6 +172,7 @@ function displayInfo(date){
       //if it's the second click to the circle, undo the click change to it
       d3.select("#pt" + (date).replace('/', ''))
       .attr("fill","#57AFC0");
+      lastDate = undefined;
     }
   }
   //if there is nothing displayed, display it
@@ -205,15 +206,22 @@ function displayInfo(date){
           }
           urlSect.append("a")
             .attr("href", dateData[i].url)
-            .text(urlText);
+            .text(urlText)
+            .classed("descLink", true);
         }
-
-        urlSect.append("br");
 
         if (dateData[i].sourceURL !== null){
           urlSect.append("a")
             .attr("href", dateData[i].sourceURL)
-            .text("Source Repo");
+            .text("Source Repo")
+            .classed("descLink", true);
+        }
+
+        if (dateData[i].otherRefURL !== null){
+          urlSect.append("a")
+            .attr("href", dateData[i].otherRefURL)
+            .text(dateData[i].otherRefLabel)
+            .classed("descLink", true);
         }
       }
       
