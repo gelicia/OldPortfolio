@@ -183,6 +183,11 @@ function displayInfo(date){
 
     for (var i = 0; i < dateData.length; i++) {
       var mainDiv = dateDetails.append("div").classed("portEntry", true);
+
+      if (i!== 0){
+        mainDiv.classed("notTop", true);
+      }
+
       var imgDiv = mainDiv.append("div").classed((i%2===0?"floatLeft":"floatRight"), true);
       var contDiv = mainDiv.append("div").classed("clearfix", true);
       var descDiv = contDiv.append("div").classed((i%2===0?"textLeft":"textRight"),true);
