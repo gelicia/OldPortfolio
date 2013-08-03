@@ -195,6 +195,16 @@ function displayInfo(date){
       var descPara = descDiv.append("p");
       descPara.text(dateData[i].description);
 
+      if (dateData[i].tags !== null){
+        var tagP = descDiv.append("p");
+
+        tagP.append("span")
+          .style("font-weight", "bold")
+          .text("Tags: ");
+
+          tagP.append("span").text(dateData[i].tags);
+      }
+
       var urlSect = descDiv.append("p");
 
       if (dateData[i].sourceURL == dateData[i].url){
